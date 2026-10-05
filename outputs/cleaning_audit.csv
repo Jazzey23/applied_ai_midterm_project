@@ -1,0 +1,9 @@
+rule,removed,remaining
+"Valid, nonmissing coordinates",0,42032
+Inside study rectangle,0,42032
+Presence records only,0,42032
+Exclude OBIS dropped records,0,42032
+Taxon explicitly flagged marine,181,41851
+Identified species required,2986,38865
+Unique OBIS record ID,0,38865
+Unique nonempty provider occurrence ID within dataset,0,38865

@@ -1,0 +1,16 @@
+{
+  "source": "Ocean Biodiversity Information System (OBIS)",
+  "endpoint": "https://api.obis.org/v3/occurrence",
+  "query": {
+    "scientificname": "Actinopterygii",
+    "geometry": "POLYGON ((122 9, 125 9, 125 12, 122 12, 122 9))",
+    "fields": "id,occurrenceID,dataset_id,datasetName,scientificName,species,speciesid,genus,family,class,decimalLatitude,decimalLongitude,year,minimumDepthInMeters,maximumDepthInMeters,marine,absence,dropped,flags,license,rightsHolder,accessRights,basisOfRecord,coordinateUncertaintyInMeters"
+  },
+  "query_example_url": "https://api.obis.org/v3/occurrence?scientificname=Actinopterygii&geometry=POLYGON+%28%28122+9%2C+125+9%2C+125+12%2C+122+12%2C+122+9%29%29&fields=id%2CoccurrenceID%2Cdataset_id%2CdatasetName%2CscientificName%2Cspecies%2Cspeciesid%2Cgenus%2Cfamily%2Cclass%2CdecimalLatitude%2CdecimalLongitude%2Cyear%2CminimumDepthInMeters%2CmaximumDepthInMeters%2Cmarine%2Cabsence%2Cdropped%2Cflags%2Clicense%2CrightsHolder%2CaccessRights%2CbasisOfRecord%2CcoordinateUncertaintyInMeters&size=10000&after=-1",
+  "retrieved_utc": "2026-10-04T04:04:29.734518+00:00",
+  "reported_total": 42032,
+  "downloaded_records": 42032,
+  "pagination": "Sequential pages; after = last OBIS record id; exhausted to empty page.",
+  "scope": "Visayas-region rectangle, 122–125 E and 9–12 N; not an official administrative or maritime boundary.",
+  "taxonomy": "Actinopterygii (ray-finned fish), not all fish; marine flag enforced during cleaning."
+}
