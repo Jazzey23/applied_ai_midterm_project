@@ -2,6 +2,8 @@
 
 Open `Philippines_Marine_Biodiversity_POC.ipynb` in Jupyter, VS Code, or another notebook viewer. It contains executed outputs, explanatory text, and seven exported figures based on real OBIS data.
 
+The notebook follows a report arc: research question and method (including why DBSCAN over K-means, EM, or SLINK) → data source and reproducibility → data preparation with a cleaning audit → descriptive statistics (dataset concentration, family and annual coverage, depth) → grid aggregation → high-richness candidate selection → DBSCAN radius choice → cluster results and sensitivity → written findings (F1–F6) → limitations → route to the final project with a 5–10 minute presentation outline.
+
 This draft studies marine ray-finned fish in a Visayas-region rectangle (122–125° E, 9–12° N), not the whole Philippines or an official maritime boundary. It measures recorded species richness and compares it with sampling coverage before applying DBSCAN to high-richness grid cells.
 
 ## Run
