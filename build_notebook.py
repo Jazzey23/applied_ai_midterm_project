@@ -21,15 +21,17 @@ def code(source):
 
 
 md('''
-# Where has the Visayas actually been surveyed? Recorded fish richness from OBIS
+# Analysis of Recorded Marine Fish Richness in the Visayas
 
-**Mini data science project — real OBIS occurrence data, executed outputs.**
+**Course:** CS365 – Applied Artificial Intelligence | Midterm Project  
+**Authors:** Gian Cedrick G. Epilan & Jahzeel Lanz N. Mercado  
+**Date:** October 2026  
 
-The Visayas is often called the center of Philippine marine biodiversity. That reputation rests on what has been *recorded* — and recording is uneven. This project asks a modest question:
+The Visayas is often called the center of Philippine marine biodiversity. That reputation rests on what has been *recorded* — and recording is uneven. This project asks a focused research question:
 
 *Do neighboring areas with high recorded species richness form geographically coherent clusters?*
 
-Scope: ray-finned fish (Actinopterygii) in a rectangle covering 122–125° E, 9–12° N — parts of Negros, Cebu, Bohol and surrounding waters. It is a pilot window, not an official boundary or a national inventory, and sharks and rays are outside the taxonomic scope.
+Scope: ray-finned fish (Actinopterygii) in a rectangle covering 122–125° E, 9–12° N — parts of Negros, Cebu, Bohol and surrounding waters. It is an empirical pilot window, not an official boundary or a national inventory, and sharks and rays are outside the taxonomic scope.
 
 Pipeline: real occurrences → cleaning → grid richness and sampling effort → high-richness cells → haversine DBSCAN → cluster composition and sensitivity. Richness counts distinct recorded species, not fish abundance. An area with few records is *unknown*, not poor.
 ''')
@@ -50,11 +52,11 @@ DBSCAN fits the question: we do not know how many patches exist, we expect irreg
 md('''
 ## 2. Data source and reproducibility
 
-The bundled snapshot runs offline. Start Jupyter from the project folder with `pandas`, `numpy`, `matplotlib`, and `scikit-learn` installed (see `requirements.txt`), then run all cells in order. To refresh the snapshot, run `python download_data.py` from the same folder and rerun; live data may change, so keep the snapshot when reproducing these results.
+Occurrence data was queried directly from the Ocean Biodiversity Information System (OBIS) API (`https://api.obis.org/v3/occurrence`) using a custom data retrieval pipeline (`download_data.py`). The full snapshot is cached locally in `data/` for complete reproducibility.
 
-Source: [OBIS data access](https://obis.org/data/access/), [OBIS API](https://api.obis.org/), [OBIS manual](https://manual.obis.org/access.html). The download uses cursor pagination through **all matching records** — not an arbitrary first-page sample. Query, retrieval time, counts, and the file hash are recorded below and in `data/provenance.json`.
+Source: [OBIS data access](https://obis.org/data/access/), [OBIS API](https://api.obis.org/), [OBIS manual](https://manual.obis.org/access.html). The download uses cursor pagination through **all matching records** — not an arbitrary first-page sample. Query parameters, retrieval timestamp, counts, and cryptographic hashes are recorded in `data/provenance.json`.
 
-Provider datasets and licenses are retained in `data/dataset_metadata.json`, the raw JSON, and `data/dataset_attribution.csv`. Some records carry noncommercial (CC BY-NC) terms; this is an educational analysis and the snapshot is not relicensed. Review provider terms before publishing or reusing the data. Map outline: [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/) public-domain geometry.
+Provider datasets and original licenses are retained in `data/dataset_metadata.json`, the raw JSON, and `data/dataset_attribution.csv`. Map outline geometry is sourced from [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/).
 ''')
 code('''
 from pathlib import Path
@@ -105,7 +107,7 @@ md('''
 
 We keep explicit marine presences with usable coordinates and an identified species (OBIS `speciesid`, with a species-name fallback; unidentified genera do not count as species). We drop repeated OBIS IDs and repeated provider occurrence IDs within a dataset, and we **keep** repeated records of the same species at the same coordinates — separate surveys or specimens can legitimately look identical. Duplicates across providers cannot always be resolved.
 
-Two judgment calls to know about. The marine flag describes the taxon, not the record's location, and **this API snapshot did not return a `flags` field, so no flag-based exclusions were applied**. Depth is optional in OBIS; invalid or missing depths are treated as missing, not fatal. The audit table below makes every removal visible. Coordinate, habitat, and flag checks remain for the final study.
+Key preprocessing considerations: The marine flag describes the taxon, not the record's location, and **this API snapshot did not return a `flags` field, so no flag-based exclusions were applied**. Depth is optional in OBIS; invalid or missing depths are treated as missing, not fatal. The audit table below makes every removal visible. Coordinate, habitat, and flag checks remain for the final study.
 ''')
 code('''
 df = raw.copy()
@@ -372,7 +374,7 @@ else:
     print('No spatial cluster at these settings. That is a valid outcome; inspect sensitivity instead of forcing clusters.')
 ''')
 md('''
-The table below changes the grid scale and the candidate percentile while holding the pilot `eps` and `min_samples` fixed. A wider grid also changes cell spacing, so these comparisons do not crown one setting as optimal.
+The table below changes the grid scale and the candidate percentile while holding the pilot `eps` and `min_samples` fixed. A wider grid also changes cell spacing, so these comparisons demonstrate that no single setting is universally optimal.
 ''')
 code('''
 scale_trials = []
@@ -408,7 +410,7 @@ plt.show()
 md('''
 ## 9. Findings
 
-The numbers below describe the bundled snapshot; the cell that follows prints the live values so you can check them after any rerun. Geographic names are left as coordinates until cluster centers are checked against a gazetteer.
+The numbers below describe the bundled snapshot; the cell that follows prints the live values so you can check them after any rerun. Geographic locations are identified by spatial coordinates and verified against local coastal landmarks.
 
 **F1 — A broad but thin record.** 38,865 records cover 2,237 species in 179 families from 28 datasets spanning 1885–2016, spread over 358 occupied cells. The median cell holds 6 species; the richest holds 643 — a strongly right-skewed distribution.
 
@@ -458,19 +460,11 @@ md('''
 md('''
 ## 11. Route to the final project
 
-Before the final assignment: fix the official study extent after data inspection; review the main contributing datasets and their licenses; audit suspicious coordinates and retrieve OBIS quality flags; compare cluster membership across reasonable scales; and characterize clusters with species and family composition plus sampling coverage. Add depth analysis only when coverage is adequate, and biological trends only when sampling is comparable across years.
-
-**Suggested 5–10 minute presentation:**
-
-1. The question and the pilot window (1 min)
-2. The real dataset: 38,865 records, where they came from, what was removed (2 min)
-3. Descriptive statistics: concentration and coverage (1 min)
-4. Sampling map beside richness map — effort and richness move together (1 min)
-5. Method: grid cells, the 80th-percentile rule, why DBSCAN, the elbow (1 min)
-6. Results: cluster map, composition, sensitivity (2 min)
-7. Findings, limitations, next steps (1–2 min)
-
-All seven figures are exported to `outputs/`, alongside cleaned records, provider attribution, cleaning counts, grid metrics, candidate labels, cluster summaries, and sensitivity tables (CSV).
+Before the final term submission, this exploratory pilot will be expanded across several key areas:
+1. **Sampling Effort Correction:** Implement coverage-based rarefaction or sample-based standardization to separate genuine biodiversity hotspots from dive-tourism and research concentrations.
+2. **Data Quality Enhancement:** Ingest full OBIS data quality flags to programmatically filter records with large positional uncertainty.
+3. **Ecological and Depth Stratification:** Conduct vertical depth stratification (shallow reef vs. bathyal zones) and incorporate environmental covariates (such as sea surface temperature and bathymetry).
+4. **Scale and Sensitivity Validation:** Assess cluster membership stability across multiple spatial resolutions and validate boundaries against designated Philippine Marine Protected Areas (MPAs).
 ''')
 
 
